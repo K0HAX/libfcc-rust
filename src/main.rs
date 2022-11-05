@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::{self, BufRead, Write};
 use std::path::Path;
 use serde::{Serialize, Deserialize};
+use ciborium;
 
 mod libfcc_data;
 mod libfcc_sql;
@@ -108,6 +109,13 @@ async fn main() {
 	let json_filename = main_config.json_filename;
 	let mut file = std::fs::File::create(json_filename).expect("create failed");
 	file.write_all(serialized.as_bytes()).expect("write failed");
+	println!("Data written to file");
+    }
+
+    {
+	let cibor_filename = "fccdb.dat";
+	let file = std::fs::File::create(cibor_filename).expect("create failed");
+	ciborium::ser::into_writer(&fcc_db, file).unwrap();
 	println!("Data written to file");
     }
 
