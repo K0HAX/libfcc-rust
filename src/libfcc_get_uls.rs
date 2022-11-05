@@ -1,8 +1,7 @@
 use std::cmp::min;
 use std::path::Path;
-use std::fs::{File, OpenOptions};
+use std::fs::{File};
 use std::io::{Seek, Write};
-use std::io::prelude::*;
 use indicatif::{ProgressBar, ProgressStyle};
 use futures_util::StreamExt;
 
