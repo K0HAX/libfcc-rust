@@ -1,0 +1,6 @@
+mysql_config:
+  sql_url:
+json_filename: fccdb.json
+write_sql: false
+write_json: true
+download_db: true

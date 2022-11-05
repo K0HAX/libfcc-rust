@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{self, BufRead};
+use std::io::{self, BufRead, Write};
 use std::path::Path;
 use serde::{Serialize, Deserialize};
 
@@ -7,6 +7,8 @@ mod libfcc_data;
 mod libfcc_sql;
 mod libfcc_parse;
 mod libfcc_config;
+mod libfcc_get_uls;
+mod libfcc_unzip_uls;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct FccDB {
@@ -68,34 +70,46 @@ fn build_fcc_db() -> FccDB {
     }
 }
 
-fn main() {
+#[allow(unused_must_use)]
+#[tokio::main]
+async fn main() {
     let config_file = std::fs::File::open("config.yaml").expect("create failed");
     let main_config: libfcc_config::Configuration = serde_yaml::from_reader(config_file).expect("Could not read values.");
+    if main_config.download_db {
+	match libfcc_get_uls::download_ham_db().await {
+	    Err(why) => panic!("download_ham_db failed: {}", why),
+	    Ok(res) => res,
+	};
+    }
+    libfcc_unzip_uls::unzip_uls();
     println!("Begin reading FCC Database");
     let fcc_db = build_fcc_db();
 
-    // ham_AM
-    println!("Beginning writing ham_AM MySQL");
-    libfcc_sql::insert_am_rows(&main_config.mysql_config.sql_url, fcc_db.amateur);
-    println!("Done writing ham_AM MySQL");
+    if main_config.write_sql {
+	// ham_AM
+	println!("Beginning writing ham_AM MySQL");
+	libfcc_sql::insert_am_rows(&main_config.mysql_config.sql_url, fcc_db.amateur.clone());
+	println!("Done writing ham_AM MySQL");
 
-    // ham_EN
-    println!("Beginning writing ham_EN MySQL");
-    libfcc_sql::insert_en_rows(&main_config.mysql_config.sql_url, fcc_db.entity.clone());
-    println!("Done writing ham_EN MySQL");
+	// ham_EN
+	println!("Beginning writing ham_EN MySQL");
+	libfcc_sql::insert_en_rows(&main_config.mysql_config.sql_url, fcc_db.entity.clone());
+	println!("Done writing ham_EN MySQL");
 
-    // ham_HD
-    println!("Beginning writing ham_HD MySQL");
-    libfcc_sql::insert_hd_rows(&main_config.mysql_config.sql_url, fcc_db.application_license_header.clone());
-    println!("Done writing ham_HD MySQL");
+	// ham_HD
+	println!("Beginning writing ham_HD MySQL");
+	libfcc_sql::insert_hd_rows(&main_config.mysql_config.sql_url, fcc_db.application_license_header.clone());
+	println!("Done writing ham_HD MySQL");
+    }
 
     // fccdb.json
-    /*
-    let serialized = serde_json::to_string_pretty(&fcc_db).unwrap();
-    let mut file = std::fs::File::create("fccdb.json").expect("create failed");
-    file.write_all(serialized.as_bytes()).expect("write failed");
-    println!("Data written to file");
-    */
+    if main_config.write_json {
+	let serialized = serde_json::to_string_pretty(&fcc_db).unwrap();
+	let json_filename = main_config.json_filename;
+	let mut file = std::fs::File::create(json_filename).expect("create failed");
+	file.write_all(serialized.as_bytes()).expect("write failed");
+	println!("Data written to file");
+    }
 
     /*
     let mut file_am = std::fs::File::create("am.json").expect("create failed");

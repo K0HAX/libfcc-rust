@@ -11,3 +11,8 @@ serde_json = "*"
 serde_yaml = "*"
 mysql = "*"
 rayon = "*"
+futures-util = "*"
+indicatif = "*"
+reqwest = { version = "*", features = ["stream"] }
+tokio = { version = "*", features = ["full"] }
+zip = "*"
