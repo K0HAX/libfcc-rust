@@ -112,7 +112,7 @@ async fn main() {
 	println!("Data written to file");
     }
 
-    {
+    if main_config.write_dat {
 	let cibor_filename = "fccdb.dat";
 	let file = std::fs::File::create(cibor_filename).expect("create failed");
 	ciborium::ser::into_writer(&fcc_db, file).unwrap();
