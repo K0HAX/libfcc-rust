@@ -1,11 +1,11 @@
-use std::convert::{From};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
+use std::convert::From;
 
 // Begin Enums
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum U64Null {
     Value(u64),
-    NULL
+    NULL,
 }
 
 // BEGIN AM
@@ -22,15 +22,15 @@ pub enum OperatorClass {
 
 impl From<&str> for OperatorClass {
     fn from(operator_class: &str) -> Self {
-	match operator_class {
-	    "A" => OperatorClass::Advanced,
-	    "E" => OperatorClass::AmateurExtra,
-	    "G" => OperatorClass::General,
-	    "N" => OperatorClass::Novice,
-	    "P" => OperatorClass::TechnicianPlus,
-	    "T" => OperatorClass::Technician,
-	    _ => OperatorClass::Unknown,
-	}
+        match operator_class {
+            "A" => OperatorClass::Advanced,
+            "E" => OperatorClass::AmateurExtra,
+            "G" => OperatorClass::General,
+            "N" => OperatorClass::Novice,
+            "P" => OperatorClass::TechnicianPlus,
+            "T" => OperatorClass::Technician,
+            _ => OperatorClass::Unknown,
+        }
     }
 }
 // END AM
@@ -52,18 +52,18 @@ pub enum EntityType {
 
 impl From<&str> for EntityType {
     fn from(entity_type: &str) -> Self {
-	match entity_type {
-	    "CE" => EntityType::TransfereeContact,
-	    "CL" => EntityType::LicenseeContact,
-	    "CR" => EntityType::AssignorOrTransferorContact,
-	    "CS" => EntityType::LesseeContact,
-	    "E" => EntityType::Transferee,
-	    "L" => EntityType::LicenseeOrAssignee,
-	    "O" => EntityType::Owner,
-	    "R" =>  EntityType::AssignorOrTransferor,
-	    "S" => EntityType::Lessee,
-	    _ => EntityType::Unknown,
-	}
+        match entity_type {
+            "CE" => EntityType::TransfereeContact,
+            "CL" => EntityType::LicenseeContact,
+            "CR" => EntityType::AssignorOrTransferorContact,
+            "CS" => EntityType::LesseeContact,
+            "E" => EntityType::Transferee,
+            "L" => EntityType::LicenseeOrAssignee,
+            "O" => EntityType::Owner,
+            "R" => EntityType::AssignorOrTransferor,
+            "S" => EntityType::Lessee,
+            _ => EntityType::Unknown,
+        }
     }
 }
 
@@ -90,25 +90,25 @@ pub enum ApplicantTypeCode {
 
 impl From<&str> for ApplicantTypeCode {
     fn from(applicant_type_code: &str) -> Self {
-	match applicant_type_code {
-	    "B" => ApplicantTypeCode::AmateurClub,
-	    "C" => ApplicantTypeCode::Corporation,
-	    "D" => ApplicantTypeCode::GeneralPartnership,
-	    "E" => ApplicantTypeCode::LimitedPartnership,
-	    "F" => ApplicantTypeCode::LimitedLiabilityPartnership,
-	    "G" => ApplicantTypeCode::GovernmentalEntity,
-	    "H" => ApplicantTypeCode::Other,
-	    "I" => ApplicantTypeCode::Individual,
-	    "J" => ApplicantTypeCode::JointVenture,
-	    "L" => ApplicantTypeCode::LimitedLiabilityCompany,
-	    "M" => ApplicantTypeCode::MilitaryRecreation,
-	    "O" => ApplicantTypeCode::Consortium,
-	    "P" => ApplicantTypeCode::Partnership,
-	    "R" => ApplicantTypeCode::RACES,
-	    "T" => ApplicantTypeCode::Trust,
-	    "U" => ApplicantTypeCode::UnincorporatedAssociation,
-	    _ => ApplicantTypeCode::Unknown,
-	}
+        match applicant_type_code {
+            "B" => ApplicantTypeCode::AmateurClub,
+            "C" => ApplicantTypeCode::Corporation,
+            "D" => ApplicantTypeCode::GeneralPartnership,
+            "E" => ApplicantTypeCode::LimitedPartnership,
+            "F" => ApplicantTypeCode::LimitedLiabilityPartnership,
+            "G" => ApplicantTypeCode::GovernmentalEntity,
+            "H" => ApplicantTypeCode::Other,
+            "I" => ApplicantTypeCode::Individual,
+            "J" => ApplicantTypeCode::JointVenture,
+            "L" => ApplicantTypeCode::LimitedLiabilityCompany,
+            "M" => ApplicantTypeCode::MilitaryRecreation,
+            "O" => ApplicantTypeCode::Consortium,
+            "P" => ApplicantTypeCode::Partnership,
+            "R" => ApplicantTypeCode::RACES,
+            "T" => ApplicantTypeCode::Trust,
+            "U" => ApplicantTypeCode::UnincorporatedAssociation,
+            _ => ApplicantTypeCode::Unknown,
+        }
     }
 }
 
@@ -121,11 +121,11 @@ pub enum EnStatusCode {
 
 impl From<&str> for EnStatusCode {
     fn from(status_code: &str) -> Self {
-	match status_code {
-	    "X" => EnStatusCode::TerminationPending,
-	    "T" => EnStatusCode::Terminated,
-	    _ => EnStatusCode::Active,
-	}
+        match status_code {
+            "X" => EnStatusCode::TerminationPending,
+            "T" => EnStatusCode::Terminated,
+            _ => EnStatusCode::Active,
+        }
     }
 }
 
@@ -146,16 +146,16 @@ pub enum LicenseStatus {
 
 impl From<&str> for LicenseStatus {
     fn from(license_status: &str) -> Self {
-	match license_status {
-	    "A" => LicenseStatus::Active,
-	    "C" => LicenseStatus::Cancelled,
-	    "E" => LicenseStatus::Expired,
-	    "L" => LicenseStatus::PendingLegalStatus,
-	    "P" => LicenseStatus::ParentStationCanceled,
-	    "T" => LicenseStatus::Terminated,
-	    "X" => LicenseStatus::TermPending,
-	    _ => LicenseStatus::Unknown,
-	}
+        match license_status {
+            "A" => LicenseStatus::Active,
+            "C" => LicenseStatus::Cancelled,
+            "E" => LicenseStatus::Expired,
+            "L" => LicenseStatus::PendingLegalStatus,
+            "P" => LicenseStatus::ParentStationCanceled,
+            "T" => LicenseStatus::Terminated,
+            "X" => LicenseStatus::TermPending,
+            _ => LicenseStatus::Unknown,
+        }
     }
 }
 
@@ -169,14 +169,14 @@ pub enum DevelopmentalStaDemonstration {
 }
 
 impl From<&str> for DevelopmentalStaDemonstration {
-    fn from (developmental_or_sta: &str) -> Self {
-	match developmental_or_sta {
-	    "D" => DevelopmentalStaDemonstration::Developmental,
-	    "M" => DevelopmentalStaDemonstration::Demonstration,
-	    "N" => DevelopmentalStaDemonstration::Regular,
-	    "S" => DevelopmentalStaDemonstration::SpecialTemporaryAuthority,
-	    _ => DevelopmentalStaDemonstration::Unknown,
-	}
+    fn from(developmental_or_sta: &str) -> Self {
+        match developmental_or_sta {
+            "D" => DevelopmentalStaDemonstration::Developmental,
+            "M" => DevelopmentalStaDemonstration::Demonstration,
+            "N" => DevelopmentalStaDemonstration::Regular,
+            "S" => DevelopmentalStaDemonstration::SpecialTemporaryAuthority,
+            _ => DevelopmentalStaDemonstration::Unknown,
+        }
     }
 }
 // END HD
