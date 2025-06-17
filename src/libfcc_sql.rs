@@ -1,7 +1,9 @@
+use std::sync::Arc;
 use mysql::prelude::*;
 use mysql::*;
 use rayon::ThreadPoolBuilder;
 use std::convert::From;
+use indicatif::{MultiProgress, ProgressBar};
 
 use crate::libfcc_data;
 
@@ -196,6 +198,7 @@ fn insert_am_rows_batch(
     am_records: Vec<libfcc_data::Amateur>,
     chunk_id: u32,
     tot_chunks: usize,
+    pb: &ProgressBar,
 ) {
     let mut tx = conn.start_transaction(TxOpts::default()).unwrap();
     let result = tx.exec_batch(
@@ -239,6 +242,7 @@ fn insert_am_rows_batch(
 				:trustee_name \
 				)",
         am_records.iter().map(|p| {
+            pb.inc(1);
             params! {
             "record_type" => p.record_type.clone(),
             "unique_system_identifier" => p.unique_system_identifier,
@@ -262,8 +266,8 @@ fn insert_am_rows_batch(
         }),
     );
     match result {
-        Ok(result_value) => {
-            println!("Ok: {:#?}", result_value);
+        Ok(_result_value) => {
+            //println!("Ok: {:#?}", result_value);
             tx.commit().unwrap();
         }
         Err(result_value) => {
@@ -271,6 +275,7 @@ fn insert_am_rows_batch(
             tx.rollback().unwrap();
         }
     };
+    pb.finish();
     println!("Chunk {}/{} complete", chunk_id, tot_chunks);
 }
 
@@ -285,20 +290,25 @@ pub fn insert_am_rows(sql_url: &str, am_records: Vec<libfcc_data::Amateur>) {
     do_am_drop(pool.get_conn().unwrap()).unwrap();
 
     println!("Inserting rows");
+    let multiprogress_bar = Arc::new(MultiProgress::new());
     let tpool = ThreadPoolBuilder::new().num_threads(10).build().unwrap();
     let mut this_chunk = 0;
     let tot_chunks = am_records_split.len();
+    let mp_clone = multiprogress_bar.clone();
     println!("Entering In Place Scope");
     tpool.in_place_scope(move |s| {
         for am_chunk in am_records_split {
             let conn = pool.get_conn().unwrap();
             this_chunk = this_chunk + 1;
-            println!("Starting chunk {}/{}", this_chunk, tot_chunks);
+            //println!("Starting chunk {}/{}", this_chunk, tot_chunks);
+            let m_clone = multiprogress_bar.clone();
             s.spawn(move |_| {
-                insert_am_rows_batch(conn, am_chunk, this_chunk, tot_chunks);
+                let pb2 = m_clone.add(ProgressBar::new(am_chunk.len().try_into().unwrap()));
+                insert_am_rows_batch(conn, am_chunk, this_chunk, tot_chunks, &pb2);
             });
         }
     });
+    let _ = mp_clone.clear();
     println!("In Place Scope exited");
     //let commit_result = tx.commit();
     //println!("commit_result: {:#?}", commit_result);
@@ -310,8 +320,9 @@ pub fn insert_am_rows(sql_url: &str, am_records: Vec<libfcc_data::Amateur>) {
 fn insert_en_rows_batch(
     mut conn: PooledConn,
     en_records: Vec<libfcc_data::Entity>,
-    chunk_id: u32,
-    tot_chunks: usize,
+    _chunk_id: u32,
+    _tot_chunks: usize,
+    pb: &ProgressBar
 ) {
     let mut tx = conn.start_transaction(TxOpts::default()).unwrap();
     let result = tx.exec_batch(
@@ -372,6 +383,7 @@ fn insert_en_rows_batch(
 				:status_date \
 				)",
         en_records.iter().map(|p| {
+            pb.inc(1);
             params! {
             "record_type" => p.record_type.clone(),
             "unique_system_identifier" => p.unique_system_identifier,
@@ -403,8 +415,8 @@ fn insert_en_rows_batch(
         }),
     );
     let result_value = match result {
-        Ok(result_value) => {
-            println!("{:#?}", result_value);
+        Ok(_result_value) => {
+            //println!("{:#?}", result_value);
             tx.commit().unwrap();
         }
         Err(result_value) => {
@@ -412,7 +424,8 @@ fn insert_en_rows_batch(
             tx.rollback().unwrap();
         }
     };
-    println!("Chunk {}/{} complete", chunk_id, tot_chunks);
+    pb.finish();
+    //println!("Chunk {}/{} complete", chunk_id, tot_chunks);
     return result_value;
 }
 
@@ -453,20 +466,25 @@ pub fn insert_en_rows(sql_url: &str, en_records: Vec<libfcc_data::Entity>) {
     do_en_drop(pool.get_conn().unwrap()).unwrap();
 
     println!("Inserting rows!");
+    let multiprogress_bar = Arc::new(MultiProgress::new());
     let tpool = ThreadPoolBuilder::new().num_threads(10).build().unwrap();
     let mut this_chunk = 0;
     let tot_chunks = en_records_split.len();
+    let mp_clone = multiprogress_bar.clone();
     println!("Entering In Place Scope!");
     tpool.in_place_scope(move |s| {
         for en_chunk in en_records_split {
+            let multiprogress_clone = multiprogress_bar.clone();
             let conn = pool.get_conn().unwrap();
             this_chunk = this_chunk + 1;
-            println!("Starting chunk {}/{}", this_chunk, tot_chunks);
+            //println!("Starting chunk {}/{}", this_chunk, tot_chunks);
             s.spawn(move |_| {
-                insert_en_rows_batch(conn, en_chunk, this_chunk, tot_chunks);
+                let pb = multiprogress_clone.add(ProgressBar::new(en_chunk.len().try_into().unwrap()));
+                insert_en_rows_batch(conn, en_chunk, this_chunk, tot_chunks, &pb);
             });
         }
     });
+    let _ = mp_clone.clear();
     println!("In Place Scope exited");
 
     //let commit_result = tx.commit();
@@ -479,8 +497,9 @@ pub fn insert_en_rows(sql_url: &str, en_records: Vec<libfcc_data::Entity>) {
 fn insert_hd_rows_batch(
     mut conn: PooledConn,
     hd_records: Vec<libfcc_data::ApplicationLicenseHeader>,
-    chunk_id: u32,
-    tot_chunks: usize,
+    _chunk_id: u32,
+    _tot_chunks: usize,
+    pb: &ProgressBar
 ) {
     let mut tx = conn.start_transaction(TxOpts::default()).unwrap();
     let result = tx.exec_batch(
@@ -607,6 +626,7 @@ fn insert_hd_rows_batch(
 				:payment_cert_900 \
 				)",
         hd_records.iter().map(|p| {
+            pb.inc(1);
             params! {
             "record_type" => p.record_type.clone(),
             "unique_system_identifier" => p.unique_system_identifier,
@@ -671,8 +691,8 @@ fn insert_hd_rows_batch(
         }),
     );
     let result_value = match result {
-        Ok(result_value) => {
-            println!("{:#?}", result_value);
+        Ok(_result_value) => {
+            //println!("{:#?}", result_value);
             tx.commit().unwrap();
         }
         Err(result_value) => {
@@ -680,7 +700,8 @@ fn insert_hd_rows_batch(
             tx.rollback().unwrap();
         }
     };
-    println!("Chunk {}/{} complete", chunk_id, tot_chunks);
+    pb.finish();
+    //println!("Chunk {}/{} complete", chunk_id, tot_chunks);
     return result_value;
 }
 
@@ -723,20 +744,24 @@ pub fn insert_hd_rows(sql_url: &str, hd_records: Vec<libfcc_data::ApplicationLic
     do_hd_drop(pool.get_conn().unwrap()).unwrap();
 
     println!("Inserting rows!");
+    let multiprogress_bar = Arc::new(MultiProgress::new());
     let tpool = ThreadPoolBuilder::new().num_threads(10).build().unwrap();
     let mut this_chunk = 0;
     let tot_chunks = hd_records_split.len();
     println!("Entering In Place Scope!");
+    let mp_clone = multiprogress_bar.clone();
     tpool.in_place_scope(move |s| {
         for hd_chunk in hd_records_split {
+            let multiprogress_clone = multiprogress_bar.clone();
             let conn = pool.get_conn().unwrap();
             this_chunk = this_chunk + 1;
-            println!("Starting chunk {}/{}", this_chunk, tot_chunks);
             s.spawn(move |_| {
-                insert_hd_rows_batch(conn, hd_chunk, this_chunk, tot_chunks);
+                let pb = multiprogress_clone.add(ProgressBar::new(hd_chunk.len().try_into().unwrap()));
+                insert_hd_rows_batch(conn, hd_chunk, this_chunk, tot_chunks, &pb);
             });
         }
     });
+    let _ = mp_clone.clear();
     println!("In Place Scope exited");
 
     //let commit_result = tx.commit();
