@@ -8,6 +8,7 @@ use std::path::Path;
 pub async fn download_ham_db() -> Result<(), Box<dyn std::error::Error>> {
     let target = "https://data.fcc.gov/download/pub/uls/complete/l_amat.zip";
     let path = Path::new("./data/l_amat.zip");
+    let parentdir = path.parent().unwrap();
     let client = reqwest::Client::new();
     let res = client
         .get(target)
@@ -42,6 +43,7 @@ pub async fn download_ham_db() -> Result<(), Box<dyn std::error::Error>> {
         downloaded = file_size;
     } else {
         println!("Fresh file..");
+	std::fs::create_dir_all(parentdir).or(Err(format!("Failed to create file structure")))?;
         file = File::create(path).or(Err(format!("Failed to create file '{}'", path.display())))?;
     }
 
@@ -57,19 +59,4 @@ pub async fn download_ham_db() -> Result<(), Box<dyn std::error::Error>> {
 
     pb.finish_with_message(format!("Downloaded {} to {}", target, path.display()));
     return Ok(());
-
-    // Original Code
-    /*
-    let path = Path::new("./data/l_amat.zip");
-    let content = match reqwest::blocking::get(target)?.bytes() {
-    Err(why) => panic!("Couldn't download {}", why),
-    Ok(resp) => resp,
-    };
-
-    match file.write_all(&content) {
-    Err(why) => panic!("Couldn't write content {}", why),
-    Ok(the_write) => the_write,
-    };
-    Ok(())
-    */
 }

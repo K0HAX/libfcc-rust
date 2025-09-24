@@ -1,9 +1,9 @@
-use std::sync::Arc;
+use indicatif::{MultiProgress, ProgressBar};
 use mysql::prelude::*;
 use mysql::*;
 use rayon::ThreadPoolBuilder;
 use std::convert::From;
-use indicatif::{MultiProgress, ProgressBar};
+use std::sync::Arc;
 
 use crate::libfcc_data;
 
@@ -322,7 +322,7 @@ fn insert_en_rows_batch(
     en_records: Vec<libfcc_data::Entity>,
     _chunk_id: u32,
     _tot_chunks: usize,
-    pb: &ProgressBar
+    pb: &ProgressBar,
 ) {
     let mut tx = conn.start_transaction(TxOpts::default()).unwrap();
     let result = tx.exec_batch(
@@ -479,7 +479,8 @@ pub fn insert_en_rows(sql_url: &str, en_records: Vec<libfcc_data::Entity>) {
             this_chunk = this_chunk + 1;
             //println!("Starting chunk {}/{}", this_chunk, tot_chunks);
             s.spawn(move |_| {
-                let pb = multiprogress_clone.add(ProgressBar::new(en_chunk.len().try_into().unwrap()));
+                let pb =
+                    multiprogress_clone.add(ProgressBar::new(en_chunk.len().try_into().unwrap()));
                 insert_en_rows_batch(conn, en_chunk, this_chunk, tot_chunks, &pb);
             });
         }
@@ -499,7 +500,7 @@ fn insert_hd_rows_batch(
     hd_records: Vec<libfcc_data::ApplicationLicenseHeader>,
     _chunk_id: u32,
     _tot_chunks: usize,
-    pb: &ProgressBar
+    pb: &ProgressBar,
 ) {
     let mut tx = conn.start_transaction(TxOpts::default()).unwrap();
     let result = tx.exec_batch(
@@ -756,7 +757,8 @@ pub fn insert_hd_rows(sql_url: &str, hd_records: Vec<libfcc_data::ApplicationLic
             let conn = pool.get_conn().unwrap();
             this_chunk = this_chunk + 1;
             s.spawn(move |_| {
-                let pb = multiprogress_clone.add(ProgressBar::new(hd_chunk.len().try_into().unwrap()));
+                let pb =
+                    multiprogress_clone.add(ProgressBar::new(hd_chunk.len().try_into().unwrap()));
                 insert_hd_rows_batch(conn, hd_chunk, this_chunk, tot_chunks, &pb);
             });
         }
