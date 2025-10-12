@@ -267,7 +267,6 @@ fn insert_am_rows_batch(
     );
     match result {
         Ok(_result_value) => {
-            //println!("Ok: {:#?}", result_value);
             tx.commit().unwrap();
         }
         Err(result_value) => {
@@ -300,7 +299,6 @@ pub fn insert_am_rows(sql_url: &str, am_records: Vec<libfcc_data::Amateur>) {
         for am_chunk in am_records_split {
             let conn = pool.get_conn().unwrap();
             this_chunk = this_chunk + 1;
-            //println!("Starting chunk {}/{}", this_chunk, tot_chunks);
             let m_clone = multiprogress_bar.clone();
             s.spawn(move |_| {
                 let pb2 = m_clone.add(ProgressBar::new(am_chunk.len().try_into().unwrap()));
@@ -310,6 +308,7 @@ pub fn insert_am_rows(sql_url: &str, am_records: Vec<libfcc_data::Amateur>) {
     });
     let _ = mp_clone.clear();
     println!("In Place Scope exited");
+    //let _ = tx.commit();
     //let commit_result = tx.commit();
     //println!("commit_result: {:#?}", commit_result);
     return ();
@@ -416,7 +415,6 @@ fn insert_en_rows_batch(
     );
     let result_value = match result {
         Ok(_result_value) => {
-            //println!("{:#?}", result_value);
             tx.commit().unwrap();
         }
         Err(result_value) => {
@@ -488,6 +486,7 @@ pub fn insert_en_rows(sql_url: &str, en_records: Vec<libfcc_data::Entity>) {
     let _ = mp_clone.clear();
     println!("In Place Scope exited");
 
+    //let _ = tx.commit();
     //let commit_result = tx.commit();
     //println!("commit_result: {:#?}", commit_result);
     return ();
@@ -766,6 +765,7 @@ pub fn insert_hd_rows(sql_url: &str, hd_records: Vec<libfcc_data::ApplicationLic
     let _ = mp_clone.clear();
     println!("In Place Scope exited");
 
+    //let _ = tx.commit();
     //let commit_result = tx.commit();
     //println!("commit_result: {:#?}", commit_result);
     return ();
