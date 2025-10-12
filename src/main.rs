@@ -85,7 +85,6 @@ async fn main() {
     }
     libfcc_unzip_uls::unzip_uls();
     println!("Begin reading FCC Database");
-    //let fcc_db = build_fcc_db();
 
     if main_config.write_sql {
         // ham_AM
@@ -143,18 +142,6 @@ async fn main() {
         ciborium::ser::into_writer(&fcc_db, file).unwrap();
         println!("Data written to file");
     }
-
-    /*
-    let mut file_am = std::fs::File::create("am.json").expect("create failed");
-    let mut file_en = std::fs::File::create("en.json").expect("create failed");
-    let mut file_hd = std::fs::File::create("hd.json").expect("create failed");
-    let am_serialized = serde_json::to_string_pretty(&fcc_db.amateur).unwrap();
-    let en_serialized = serde_json::to_string_pretty(&fcc_db.entity).unwrap();
-    let hd_serialized = serde_json::to_string_pretty(&fcc_db.application_license_header).unwrap();
-    file_am.write_all(am_serialized.as_bytes()).expect("write failed");
-    file_en.write_all(en_serialized.as_bytes()).expect("write failed");
-    file_hd.write_all(hd_serialized.as_bytes()).expect("write failed");
-    */
 }
 
 // The output is wrapped in a Result to allow matching on errors
