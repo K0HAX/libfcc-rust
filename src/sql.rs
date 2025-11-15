@@ -5,160 +5,160 @@ use rayon::ThreadPoolBuilder;
 use std::convert::From;
 use std::sync::Arc;
 
-use crate::libfcc_data;
+use crate::data;
 
 // Begin Enums
-impl From<libfcc_data::OperatorClass> for mysql::Value {
-    fn from(operator_class: libfcc_data::OperatorClass) -> Self {
+impl From<data::OperatorClass> for mysql::Value {
+    fn from(operator_class: data::OperatorClass) -> Self {
         match operator_class {
-            libfcc_data::OperatorClass::Advanced => mysql::Value::Bytes("A".as_bytes().to_vec()),
-            libfcc_data::OperatorClass::AmateurExtra => {
+            data::OperatorClass::Advanced => mysql::Value::Bytes("A".as_bytes().to_vec()),
+            data::OperatorClass::AmateurExtra => {
                 mysql::Value::Bytes("E".as_bytes().to_vec())
             }
-            libfcc_data::OperatorClass::General => mysql::Value::Bytes("G".as_bytes().to_vec()),
-            libfcc_data::OperatorClass::Novice => mysql::Value::Bytes("N".as_bytes().to_vec()),
-            libfcc_data::OperatorClass::TechnicianPlus => {
+            data::OperatorClass::General => mysql::Value::Bytes("G".as_bytes().to_vec()),
+            data::OperatorClass::Novice => mysql::Value::Bytes("N".as_bytes().to_vec()),
+            data::OperatorClass::TechnicianPlus => {
                 mysql::Value::Bytes("P".as_bytes().to_vec())
             }
-            libfcc_data::OperatorClass::Technician => mysql::Value::Bytes("T".as_bytes().to_vec()),
-            libfcc_data::OperatorClass::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
+            data::OperatorClass::Technician => mysql::Value::Bytes("T".as_bytes().to_vec()),
+            data::OperatorClass::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
         }
     }
 }
 
-impl From<libfcc_data::U64Null> for mysql::Value {
-    fn from(val: libfcc_data::U64Null) -> Self {
+impl From<data::U64Null> for mysql::Value {
+    fn from(val: data::U64Null) -> Self {
         match val {
-            libfcc_data::U64Null::Value(value) => mysql::Value::UInt(value),
-            libfcc_data::U64Null::NULL => mysql::Value::NULL,
+            data::U64Null::Value(value) => mysql::Value::UInt(value),
+            data::U64Null::NULL => mysql::Value::NULL,
         }
     }
 }
 
-impl From<libfcc_data::EntityType> for mysql::Value {
-    fn from(val: libfcc_data::EntityType) -> Self {
+impl From<data::EntityType> for mysql::Value {
+    fn from(val: data::EntityType) -> Self {
         match val {
-            libfcc_data::EntityType::TransfereeContact => {
+            data::EntityType::TransfereeContact => {
                 mysql::Value::Bytes("CE".as_bytes().to_vec())
             }
-            libfcc_data::EntityType::LicenseeContact => {
+            data::EntityType::LicenseeContact => {
                 mysql::Value::Bytes("CL".as_bytes().to_vec())
             }
-            libfcc_data::EntityType::AssignorOrTransferorContact => {
+            data::EntityType::AssignorOrTransferorContact => {
                 mysql::Value::Bytes("CR".as_bytes().to_vec())
             }
-            libfcc_data::EntityType::LesseeContact => mysql::Value::Bytes("CS".as_bytes().to_vec()),
-            libfcc_data::EntityType::Transferee => mysql::Value::Bytes("E".as_bytes().to_vec()),
-            libfcc_data::EntityType::LicenseeOrAssignee => {
+            data::EntityType::LesseeContact => mysql::Value::Bytes("CS".as_bytes().to_vec()),
+            data::EntityType::Transferee => mysql::Value::Bytes("E".as_bytes().to_vec()),
+            data::EntityType::LicenseeOrAssignee => {
                 mysql::Value::Bytes("L".as_bytes().to_vec())
             }
-            libfcc_data::EntityType::Owner => mysql::Value::Bytes("O".as_bytes().to_vec()),
-            libfcc_data::EntityType::AssignorOrTransferor => {
+            data::EntityType::Owner => mysql::Value::Bytes("O".as_bytes().to_vec()),
+            data::EntityType::AssignorOrTransferor => {
                 mysql::Value::Bytes("R".as_bytes().to_vec())
             }
-            libfcc_data::EntityType::Lessee => mysql::Value::Bytes("S".as_bytes().to_vec()),
-            libfcc_data::EntityType::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
+            data::EntityType::Lessee => mysql::Value::Bytes("S".as_bytes().to_vec()),
+            data::EntityType::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
         }
     }
 }
 
-impl From<libfcc_data::ApplicantTypeCode> for mysql::Value {
-    fn from(val: libfcc_data::ApplicantTypeCode) -> Self {
+impl From<data::ApplicantTypeCode> for mysql::Value {
+    fn from(val: data::ApplicantTypeCode) -> Self {
         match val {
-            libfcc_data::ApplicantTypeCode::AmateurClub => {
+            data::ApplicantTypeCode::AmateurClub => {
                 mysql::Value::Bytes("B".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::Corporation => {
+            data::ApplicantTypeCode::Corporation => {
                 mysql::Value::Bytes("C".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::GeneralPartnership => {
+            data::ApplicantTypeCode::GeneralPartnership => {
                 mysql::Value::Bytes("D".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::LimitedPartnership => {
+            data::ApplicantTypeCode::LimitedPartnership => {
                 mysql::Value::Bytes("E".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::LimitedLiabilityPartnership => {
+            data::ApplicantTypeCode::LimitedLiabilityPartnership => {
                 mysql::Value::Bytes("F".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::GovernmentalEntity => {
+            data::ApplicantTypeCode::GovernmentalEntity => {
                 mysql::Value::Bytes("G".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::Other => mysql::Value::Bytes("H".as_bytes().to_vec()),
-            libfcc_data::ApplicantTypeCode::Individual => {
+            data::ApplicantTypeCode::Other => mysql::Value::Bytes("H".as_bytes().to_vec()),
+            data::ApplicantTypeCode::Individual => {
                 mysql::Value::Bytes("I".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::JointVenture => {
+            data::ApplicantTypeCode::JointVenture => {
                 mysql::Value::Bytes("J".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::LimitedLiabilityCompany => {
+            data::ApplicantTypeCode::LimitedLiabilityCompany => {
                 mysql::Value::Bytes("L".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::MilitaryRecreation => {
+            data::ApplicantTypeCode::MilitaryRecreation => {
                 mysql::Value::Bytes("M".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::Consortium => {
+            data::ApplicantTypeCode::Consortium => {
                 mysql::Value::Bytes("O".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::Partnership => {
+            data::ApplicantTypeCode::Partnership => {
                 mysql::Value::Bytes("P".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::RACES => mysql::Value::Bytes("R".as_bytes().to_vec()),
-            libfcc_data::ApplicantTypeCode::Trust => mysql::Value::Bytes("T".as_bytes().to_vec()),
-            libfcc_data::ApplicantTypeCode::UnincorporatedAssociation => {
+            data::ApplicantTypeCode::RACES => mysql::Value::Bytes("R".as_bytes().to_vec()),
+            data::ApplicantTypeCode::Trust => mysql::Value::Bytes("T".as_bytes().to_vec()),
+            data::ApplicantTypeCode::UnincorporatedAssociation => {
                 mysql::Value::Bytes("U".as_bytes().to_vec())
             }
-            libfcc_data::ApplicantTypeCode::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
+            data::ApplicantTypeCode::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
         }
     }
 }
 
-impl From<libfcc_data::EnStatusCode> for mysql::Value {
-    fn from(val: libfcc_data::EnStatusCode) -> Self {
+impl From<data::EnStatusCode> for mysql::Value {
+    fn from(val: data::EnStatusCode) -> Self {
         match val {
-            libfcc_data::EnStatusCode::TerminationPending => {
+            data::EnStatusCode::TerminationPending => {
                 mysql::Value::Bytes("X".as_bytes().to_vec())
             }
-            libfcc_data::EnStatusCode::Terminated => mysql::Value::Bytes("T".as_bytes().to_vec()),
-            libfcc_data::EnStatusCode::Active => mysql::Value::Bytes("".as_bytes().to_vec()),
+            data::EnStatusCode::Terminated => mysql::Value::Bytes("T".as_bytes().to_vec()),
+            data::EnStatusCode::Active => mysql::Value::Bytes("".as_bytes().to_vec()),
         }
     }
 }
 
-impl From<libfcc_data::LicenseStatus> for mysql::Value {
-    fn from(val: libfcc_data::LicenseStatus) -> Self {
+impl From<data::LicenseStatus> for mysql::Value {
+    fn from(val: data::LicenseStatus) -> Self {
         match val {
-            libfcc_data::LicenseStatus::Active => mysql::Value::Bytes("A".as_bytes().to_vec()),
-            libfcc_data::LicenseStatus::Cancelled => mysql::Value::Bytes("C".as_bytes().to_vec()),
-            libfcc_data::LicenseStatus::Expired => mysql::Value::Bytes("E".as_bytes().to_vec()),
-            libfcc_data::LicenseStatus::PendingLegalStatus => {
+            data::LicenseStatus::Active => mysql::Value::Bytes("A".as_bytes().to_vec()),
+            data::LicenseStatus::Cancelled => mysql::Value::Bytes("C".as_bytes().to_vec()),
+            data::LicenseStatus::Expired => mysql::Value::Bytes("E".as_bytes().to_vec()),
+            data::LicenseStatus::PendingLegalStatus => {
                 mysql::Value::Bytes("L".as_bytes().to_vec())
             }
-            libfcc_data::LicenseStatus::ParentStationCanceled => {
+            data::LicenseStatus::ParentStationCanceled => {
                 mysql::Value::Bytes("P".as_bytes().to_vec())
             }
-            libfcc_data::LicenseStatus::Terminated => mysql::Value::Bytes("T".as_bytes().to_vec()),
-            libfcc_data::LicenseStatus::TermPending => mysql::Value::Bytes("X".as_bytes().to_vec()),
-            libfcc_data::LicenseStatus::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
+            data::LicenseStatus::Terminated => mysql::Value::Bytes("T".as_bytes().to_vec()),
+            data::LicenseStatus::TermPending => mysql::Value::Bytes("X".as_bytes().to_vec()),
+            data::LicenseStatus::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
         }
     }
 }
 
-impl From<libfcc_data::DevelopmentalStaDemonstration> for mysql::Value {
-    fn from(val: libfcc_data::DevelopmentalStaDemonstration) -> Self {
+impl From<data::DevelopmentalStaDemonstration> for mysql::Value {
+    fn from(val: data::DevelopmentalStaDemonstration) -> Self {
         match val {
-            libfcc_data::DevelopmentalStaDemonstration::Developmental => {
+            data::DevelopmentalStaDemonstration::Developmental => {
                 mysql::Value::Bytes("D".as_bytes().to_vec())
             }
-            libfcc_data::DevelopmentalStaDemonstration::Demonstration => {
+            data::DevelopmentalStaDemonstration::Demonstration => {
                 mysql::Value::Bytes("M".as_bytes().to_vec())
             }
-            libfcc_data::DevelopmentalStaDemonstration::Regular => {
+            data::DevelopmentalStaDemonstration::Regular => {
                 mysql::Value::Bytes("N".as_bytes().to_vec())
             }
-            libfcc_data::DevelopmentalStaDemonstration::SpecialTemporaryAuthority => {
+            data::DevelopmentalStaDemonstration::SpecialTemporaryAuthority => {
                 mysql::Value::Bytes("S".as_bytes().to_vec())
             }
-            libfcc_data::DevelopmentalStaDemonstration::Unknown => {
+            data::DevelopmentalStaDemonstration::Unknown => {
                 mysql::Value::Bytes("".as_bytes().to_vec())
             }
         }
@@ -167,14 +167,14 @@ impl From<libfcc_data::DevelopmentalStaDemonstration> for mysql::Value {
 // End Enums
 
 // BEGIN ham_AM //
-fn split_am_rows(input_records: Vec<libfcc_data::Amateur>) -> Vec<Vec<libfcc_data::Amateur>> {
-    let mut retval: Vec<Vec<libfcc_data::Amateur>> = Vec::new();
+fn split_am_rows(input_records: Vec<data::Amateur>) -> Vec<Vec<data::Amateur>> {
+    let mut retval: Vec<Vec<data::Amateur>> = Vec::new();
     let mut i = 0;
     let mut n = 0;
     let split_modulus = input_records.len() / 10;
     for am_row in input_records {
         if (n % split_modulus) == 0 {
-            let mut this_vec: Vec<libfcc_data::Amateur> = Vec::new();
+            let mut this_vec: Vec<data::Amateur> = Vec::new();
             this_vec.push(am_row);
             retval.push(this_vec);
             i = retval.len() - 1;
@@ -195,7 +195,7 @@ fn do_am_drop(mut conn: mysql::PooledConn) -> mysql::Result<()> {
 
 fn insert_am_rows_batch(
     mut conn: mysql::PooledConn,
-    am_records: Vec<libfcc_data::Amateur>,
+    am_records: Vec<data::Amateur>,
     chunk_id: u32,
     tot_chunks: usize,
     pb: &ProgressBar,
@@ -278,7 +278,7 @@ fn insert_am_rows_batch(
     println!("Chunk {}/{} complete", chunk_id, tot_chunks);
 }
 
-pub fn insert_am_rows(sql_url: &str, am_records: Vec<libfcc_data::Amateur>) {
+pub fn insert_am_rows(sql_url: &str, am_records: Vec<data::Amateur>) {
     let pool = Pool::new(sql_url).unwrap();
 
     println!("Splitting rows");
@@ -318,7 +318,7 @@ pub fn insert_am_rows(sql_url: &str, am_records: Vec<libfcc_data::Amateur>) {
 // BEGIN ham_EN //
 fn insert_en_rows_batch(
     mut conn: PooledConn,
-    en_records: Vec<libfcc_data::Entity>,
+    en_records: Vec<data::Entity>,
     _chunk_id: u32,
     _tot_chunks: usize,
     pb: &ProgressBar,
@@ -427,14 +427,14 @@ fn insert_en_rows_batch(
     return result_value;
 }
 
-fn split_en_rows(input_records: Vec<libfcc_data::Entity>) -> Vec<Vec<libfcc_data::Entity>> {
-    let mut retval: Vec<Vec<libfcc_data::Entity>> = Vec::new();
+fn split_en_rows(input_records: Vec<data::Entity>) -> Vec<Vec<data::Entity>> {
+    let mut retval: Vec<Vec<data::Entity>> = Vec::new();
     let mut i = 0;
     let mut n = 0;
     let split_modulus = input_records.len() / 10;
     for en_row in input_records {
         if (n % split_modulus) == 0 {
-            let mut this_vec: Vec<libfcc_data::Entity> = Vec::new();
+            let mut this_vec: Vec<data::Entity> = Vec::new();
             this_vec.push(en_row);
             retval.push(this_vec);
             i = retval.len() - 1;
@@ -453,7 +453,7 @@ fn do_en_drop(mut conn: mysql::PooledConn) -> mysql::Result<()> {
     return result;
 }
 
-pub fn insert_en_rows(sql_url: &str, en_records: Vec<libfcc_data::Entity>) {
+pub fn insert_en_rows(sql_url: &str, en_records: Vec<data::Entity>) {
     let pool = Pool::new(sql_url).unwrap();
 
     println!("Splitting rows!");
@@ -496,7 +496,7 @@ pub fn insert_en_rows(sql_url: &str, en_records: Vec<libfcc_data::Entity>) {
 // BEGIN ham_HD //
 fn insert_hd_rows_batch(
     mut conn: PooledConn,
-    hd_records: Vec<libfcc_data::ApplicationLicenseHeader>,
+    hd_records: Vec<data::ApplicationLicenseHeader>,
     _chunk_id: u32,
     _tot_chunks: usize,
     pb: &ProgressBar,
@@ -706,15 +706,15 @@ fn insert_hd_rows_batch(
 }
 
 fn split_hd_rows(
-    input_records: Vec<libfcc_data::ApplicationLicenseHeader>,
-) -> Vec<Vec<libfcc_data::ApplicationLicenseHeader>> {
-    let mut retval: Vec<Vec<libfcc_data::ApplicationLicenseHeader>> = Vec::new();
+    input_records: Vec<data::ApplicationLicenseHeader>,
+) -> Vec<Vec<data::ApplicationLicenseHeader>> {
+    let mut retval: Vec<Vec<data::ApplicationLicenseHeader>> = Vec::new();
     let mut i = 0;
     let mut n = 0;
     let split_modulus = input_records.len() / 10;
     for hd_row in input_records {
         if (n % split_modulus) == 0 {
-            let mut this_vec: Vec<libfcc_data::ApplicationLicenseHeader> = Vec::new();
+            let mut this_vec: Vec<data::ApplicationLicenseHeader> = Vec::new();
             this_vec.push(hd_row);
             retval.push(this_vec);
             i = retval.len() - 1;
@@ -733,7 +733,7 @@ fn do_hd_drop(mut conn: mysql::PooledConn) -> mysql::Result<()> {
     return result;
 }
 
-pub fn insert_hd_rows(sql_url: &str, hd_records: Vec<libfcc_data::ApplicationLicenseHeader>) {
+pub fn insert_hd_rows(sql_url: &str, hd_records: Vec<data::ApplicationLicenseHeader>) {
     let pool = Pool::new(sql_url).unwrap();
 
     println!("Splitting rows!");

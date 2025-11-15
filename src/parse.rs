@@ -1,6 +1,6 @@
-use crate::libfcc_data;
+use crate::data;
 
-pub fn parse_am_line(line: String) -> libfcc_data::Amateur {
+pub fn parse_am_line(line: String) -> data::Amateur {
     let split: Vec<&str> = line.split("|").collect();
     let unique_system_identifier: u32 = split[1]
         .trim()
@@ -8,11 +8,11 @@ pub fn parse_am_line(line: String) -> libfcc_data::Amateur {
         .expect("Unique System Identifier is not a number!");
     let region_code_result = split[7].trim().parse::<u64>();
     let region_code = match region_code_result {
-        Ok(value) => libfcc_data::U64Null::Value(value),
-        Err(_error) => libfcc_data::U64Null::NULL,
+        Ok(value) => data::U64Null::Value(value),
+        Err(_error) => data::U64Null::NULL,
     };
-    let operator_class = libfcc_data::OperatorClass::from(split[5]);
-    libfcc_data::Amateur {
+    let operator_class = data::OperatorClass::from(split[5]);
+    data::Amateur {
         record_type: String::from(split[0]),
         unique_system_identifier: unique_system_identifier,
         uls_file_num: String::from(split[2]),
@@ -34,13 +34,13 @@ pub fn parse_am_line(line: String) -> libfcc_data::Amateur {
     }
 }
 
-pub fn parse_en_line(line: String) -> libfcc_data::Entity {
+pub fn parse_en_line(line: String) -> data::Entity {
     let split: Vec<&str> = line.split("|").collect();
     let unique_system_identifier: u32 = split[1]
         .trim()
         .parse()
         .expect("Unique System Identifier is not a number!");
-    libfcc_data::Entity {
+    data::Entity {
         record_type: String::from(split[0]),
         unique_system_identifier: unique_system_identifier,
         uls_file_num: String::from(split[2]),
@@ -73,21 +73,21 @@ pub fn parse_en_line(line: String) -> libfcc_data::Entity {
     }
 }
 
-pub fn parse_hd_line(line: String) -> libfcc_data::ApplicationLicenseHeader {
+pub fn parse_hd_line(line: String) -> data::ApplicationLicenseHeader {
     let split: Vec<&str> = line.split("|").collect();
     let unique_system_identifier: u32 = split[1]
         .trim()
         .parse()
         .expect("Unique System Identifier is not a number!");
-    let license_status: libfcc_data::LicenseStatus = libfcc_data::LicenseStatus::from(split[5]);
-    let developmental_or_sta: libfcc_data::DevelopmentalStaDemonstration =
-        libfcc_data::DevelopmentalStaDemonstration::from(split[28]);
+    let license_status: data::LicenseStatus = data::LicenseStatus::from(split[5]);
+    let developmental_or_sta: data::DevelopmentalStaDemonstration =
+        data::DevelopmentalStaDemonstration::from(split[28]);
     let auction_id_result = split[44].trim().parse::<u64>();
     let auction_id = match auction_id_result {
-        Ok(value) => libfcc_data::U64Null::Value(value),
-        Err(_error) => libfcc_data::U64Null::NULL,
+        Ok(value) => data::U64Null::Value(value),
+        Err(_error) => data::U64Null::NULL,
     };
-    libfcc_data::ApplicationLicenseHeader {
+    data::ApplicationLicenseHeader {
         record_type: String::from(split[0]),
         unique_system_identifier: unique_system_identifier,
         uls_file_num: String::from(split[2]),
