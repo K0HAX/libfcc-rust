@@ -12,14 +12,10 @@ impl From<data::OperatorClass> for mysql::Value {
     fn from(operator_class: data::OperatorClass) -> Self {
         match operator_class {
             data::OperatorClass::Advanced => mysql::Value::Bytes("A".as_bytes().to_vec()),
-            data::OperatorClass::AmateurExtra => {
-                mysql::Value::Bytes("E".as_bytes().to_vec())
-            }
+            data::OperatorClass::AmateurExtra => mysql::Value::Bytes("E".as_bytes().to_vec()),
             data::OperatorClass::General => mysql::Value::Bytes("G".as_bytes().to_vec()),
             data::OperatorClass::Novice => mysql::Value::Bytes("N".as_bytes().to_vec()),
-            data::OperatorClass::TechnicianPlus => {
-                mysql::Value::Bytes("P".as_bytes().to_vec())
-            }
+            data::OperatorClass::TechnicianPlus => mysql::Value::Bytes("P".as_bytes().to_vec()),
             data::OperatorClass::Technician => mysql::Value::Bytes("T".as_bytes().to_vec()),
             data::OperatorClass::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
         }
@@ -38,24 +34,16 @@ impl From<data::U64Null> for mysql::Value {
 impl From<data::EntityType> for mysql::Value {
     fn from(val: data::EntityType) -> Self {
         match val {
-            data::EntityType::TransfereeContact => {
-                mysql::Value::Bytes("CE".as_bytes().to_vec())
-            }
-            data::EntityType::LicenseeContact => {
-                mysql::Value::Bytes("CL".as_bytes().to_vec())
-            }
+            data::EntityType::TransfereeContact => mysql::Value::Bytes("CE".as_bytes().to_vec()),
+            data::EntityType::LicenseeContact => mysql::Value::Bytes("CL".as_bytes().to_vec()),
             data::EntityType::AssignorOrTransferorContact => {
                 mysql::Value::Bytes("CR".as_bytes().to_vec())
             }
             data::EntityType::LesseeContact => mysql::Value::Bytes("CS".as_bytes().to_vec()),
             data::EntityType::Transferee => mysql::Value::Bytes("E".as_bytes().to_vec()),
-            data::EntityType::LicenseeOrAssignee => {
-                mysql::Value::Bytes("L".as_bytes().to_vec())
-            }
+            data::EntityType::LicenseeOrAssignee => mysql::Value::Bytes("L".as_bytes().to_vec()),
             data::EntityType::Owner => mysql::Value::Bytes("O".as_bytes().to_vec()),
-            data::EntityType::AssignorOrTransferor => {
-                mysql::Value::Bytes("R".as_bytes().to_vec())
-            }
+            data::EntityType::AssignorOrTransferor => mysql::Value::Bytes("R".as_bytes().to_vec()),
             data::EntityType::Lessee => mysql::Value::Bytes("S".as_bytes().to_vec()),
             data::EntityType::Unknown => mysql::Value::Bytes("".as_bytes().to_vec()),
         }
@@ -65,12 +53,8 @@ impl From<data::EntityType> for mysql::Value {
 impl From<data::ApplicantTypeCode> for mysql::Value {
     fn from(val: data::ApplicantTypeCode) -> Self {
         match val {
-            data::ApplicantTypeCode::AmateurClub => {
-                mysql::Value::Bytes("B".as_bytes().to_vec())
-            }
-            data::ApplicantTypeCode::Corporation => {
-                mysql::Value::Bytes("C".as_bytes().to_vec())
-            }
+            data::ApplicantTypeCode::AmateurClub => mysql::Value::Bytes("B".as_bytes().to_vec()),
+            data::ApplicantTypeCode::Corporation => mysql::Value::Bytes("C".as_bytes().to_vec()),
             data::ApplicantTypeCode::GeneralPartnership => {
                 mysql::Value::Bytes("D".as_bytes().to_vec())
             }
@@ -84,24 +68,16 @@ impl From<data::ApplicantTypeCode> for mysql::Value {
                 mysql::Value::Bytes("G".as_bytes().to_vec())
             }
             data::ApplicantTypeCode::Other => mysql::Value::Bytes("H".as_bytes().to_vec()),
-            data::ApplicantTypeCode::Individual => {
-                mysql::Value::Bytes("I".as_bytes().to_vec())
-            }
-            data::ApplicantTypeCode::JointVenture => {
-                mysql::Value::Bytes("J".as_bytes().to_vec())
-            }
+            data::ApplicantTypeCode::Individual => mysql::Value::Bytes("I".as_bytes().to_vec()),
+            data::ApplicantTypeCode::JointVenture => mysql::Value::Bytes("J".as_bytes().to_vec()),
             data::ApplicantTypeCode::LimitedLiabilityCompany => {
                 mysql::Value::Bytes("L".as_bytes().to_vec())
             }
             data::ApplicantTypeCode::MilitaryRecreation => {
                 mysql::Value::Bytes("M".as_bytes().to_vec())
             }
-            data::ApplicantTypeCode::Consortium => {
-                mysql::Value::Bytes("O".as_bytes().to_vec())
-            }
-            data::ApplicantTypeCode::Partnership => {
-                mysql::Value::Bytes("P".as_bytes().to_vec())
-            }
+            data::ApplicantTypeCode::Consortium => mysql::Value::Bytes("O".as_bytes().to_vec()),
+            data::ApplicantTypeCode::Partnership => mysql::Value::Bytes("P".as_bytes().to_vec()),
             data::ApplicantTypeCode::RACES => mysql::Value::Bytes("R".as_bytes().to_vec()),
             data::ApplicantTypeCode::Trust => mysql::Value::Bytes("T".as_bytes().to_vec()),
             data::ApplicantTypeCode::UnincorporatedAssociation => {
@@ -115,9 +91,7 @@ impl From<data::ApplicantTypeCode> for mysql::Value {
 impl From<data::EnStatusCode> for mysql::Value {
     fn from(val: data::EnStatusCode) -> Self {
         match val {
-            data::EnStatusCode::TerminationPending => {
-                mysql::Value::Bytes("X".as_bytes().to_vec())
-            }
+            data::EnStatusCode::TerminationPending => mysql::Value::Bytes("X".as_bytes().to_vec()),
             data::EnStatusCode::Terminated => mysql::Value::Bytes("T".as_bytes().to_vec()),
             data::EnStatusCode::Active => mysql::Value::Bytes("".as_bytes().to_vec()),
         }
@@ -130,9 +104,7 @@ impl From<data::LicenseStatus> for mysql::Value {
             data::LicenseStatus::Active => mysql::Value::Bytes("A".as_bytes().to_vec()),
             data::LicenseStatus::Cancelled => mysql::Value::Bytes("C".as_bytes().to_vec()),
             data::LicenseStatus::Expired => mysql::Value::Bytes("E".as_bytes().to_vec()),
-            data::LicenseStatus::PendingLegalStatus => {
-                mysql::Value::Bytes("L".as_bytes().to_vec())
-            }
+            data::LicenseStatus::PendingLegalStatus => mysql::Value::Bytes("L".as_bytes().to_vec()),
             data::LicenseStatus::ParentStationCanceled => {
                 mysql::Value::Bytes("P".as_bytes().to_vec())
             }

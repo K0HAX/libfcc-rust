@@ -43,7 +43,7 @@ pub async fn download_ham_db() -> Result<(), Box<dyn std::error::Error>> {
         downloaded = file_size;
     } else {
         println!("Fresh file..");
-	std::fs::create_dir_all(parentdir).or(Err(format!("Failed to create file structure")))?;
+        std::fs::create_dir_all(parentdir).or(Err(format!("Failed to create file structure")))?;
         file = File::create(path).or(Err(format!("Failed to create file '{}'", path.display())))?;
     }
 

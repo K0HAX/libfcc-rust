@@ -135,10 +135,7 @@ fn parse_am_file(filename: &str) -> Vec<data::Amateur> {
 fn am_hashmap(data: Vec<data::Amateur>) -> HashMap<u32, data::Amateur> {
     let mut am_records: HashMap<u32, data::Amateur> = HashMap::new();
     for record in data {
-        am_records.insert(
-            record.unique_system_identifier,
-            record
-        );
+        am_records.insert(record.unique_system_identifier, record);
     }
     am_records
 }
@@ -160,10 +157,7 @@ fn parse_en_file(filename: &str) -> Vec<data::Entity> {
 fn en_hashmap(data: Vec<data::Entity>) -> HashMap<u32, data::Entity> {
     let mut en_records: HashMap<u32, data::Entity> = HashMap::new();
     for record in data {
-        en_records.insert(
-            record.unique_system_identifier,
-            record
-        );
+        en_records.insert(record.unique_system_identifier, record);
     }
     en_records
 }
@@ -181,13 +175,12 @@ fn parse_hd_file(filename: &str) -> Vec<data::ApplicationLicenseHeader> {
     hd_records
 }
 
-fn hd_hashmap(data: Vec<data::ApplicationLicenseHeader>) -> HashMap<u32, data::ApplicationLicenseHeader> {
+fn hd_hashmap(
+    data: Vec<data::ApplicationLicenseHeader>,
+) -> HashMap<u32, data::ApplicationLicenseHeader> {
     let mut hd_records: HashMap<u32, data::ApplicationLicenseHeader> = HashMap::new();
     for record in data {
-        hd_records.insert(
-            record.unique_system_identifier,
-            record
-        );
+        hd_records.insert(record.unique_system_identifier, record);
     }
     hd_records
 }
@@ -218,15 +211,21 @@ fn build_fcc_db2() -> Vec<FccDB2> {
     for item in entity {
         let this_am = match amateur_map.get(&item.unique_system_identifier) {
             Some(x) => x,
-            None => { continue; },
+            None => {
+                continue;
+            }
         };
         let this_en = match entity_map.get(&item.unique_system_identifier) {
             Some(x) => x,
-            None => { continue; },
+            None => {
+                continue;
+            }
         };
         let this_hd = match hd_map.get(&item.unique_system_identifier) {
             Some(x) => x,
-            None => { continue; },
+            None => {
+                continue;
+            }
         };
         let this_item = FccDB2 {
             unique_system_identifier: this_am.unique_system_identifier,
